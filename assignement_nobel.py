@@ -20,7 +20,73 @@ except FileExistsError:
           ''')
 
 
-def analyze_data():
+def harvest_data():
+    url: str = "https://www.nobelprize.org/prizes/lists/all-prizes-in-economic-sciences/"
+
+    fieldnames = ['names', 'link', 'born', 'place_of_birth', 'year', 'affiliation', 'what_for', 'gender', 'country_of_origin', 'country_of_affiliation']
+
+    nobel_prizes_economy: bytes = requests.get(url).content
+
+    soup = BeautifulSoup(nobel_prizes_economy, 'html.parser')
+
+    prizes_by_year: list = soup.find_all('div', class_='by_year')
+
+    needed_links = []
+
+    for i in prizes_by_year:
+        links_in_tag = i.find_all('a')
+        for item in links_in_tag:
+            needed_links.append(item)
+
+    print('''
+        
+        .----.______
+        |           |
+        |    ___________
+        |   /          /
+        |  /          /
+        | /          /
+        |/__________/
+        
+        Creating csv and harvesting data
+        
+        ''')
+
+    with open("Econ_Nobel_Laureates" + '\\' + "data_for_analysis.csv", 'w+', encoding='utf-8', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for _ in needed_links:
+            if "facts" in _.get('href'):
+                link_to_bio = _.get('href')
+                name = _.text
+                year_received = (re.search(r'\d\d\d\d', str(_.get('href'))))
+                year_awarded = year_received.group(0)
+                first_name = name.split()[1] if name.split()[0] == "A." else name.split()[0]
+                gender = Genderize().get([first_name])[0]['gender']
+                bio_page = BeautifulSoup(requests.get(link_to_bio).content, 'html.parser')
+                bio = bio_page.find_all('p')
+                for j in bio:
+                    if 'Born:' in j.text:
+                        birthday = re.search(r'\d\d? \w* \d\d\d\d|\d\d\d\d', j.text).group(0)
+                        birthplace = re.search(r'(?<=\d\d\d\d, ).*', j.text).group(0).strip()
+                        country_of_origin = birthplace.split()[-1]
+                    if 'Affiliation' in j.text:
+                        institution = re.search(r'(?<=Affiliation at the time of the award:).*', j.text).group(0)
+                        country_of_affiliation = institution.split()[-1]
+                    if 'The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel 1974' in j.text:
+                        institution = "Affiliation unknown"
+                        country_of_affiliation = "Unknown"
+                    if 'motivation' in j.text:
+                        motif = re.search(r'(?<=for).*', j.text).group(0)
+                        motif = motif.replace('"', '')
+                        motif = motif.replace('.', '')
+                writer.writerow({'names': name, 'link': link_to_bio, 'born': birthday, 'place_of_birth': birthplace, 'year': year_awarded,
+                                 'affiliation': institution, 'what_for': motif, 'gender': gender, 'country_of_origin': country_of_origin,
+                                 'country_of_affiliation': country_of_affiliation})
+        f.close()
+
+    print("Harvesting the data is done. Program will prepare an analysis now.")
+
     if os.path.isfile("Econ_Nobel_Laureates" + '\\' + "data_for_analysis.csv"):
         df = pd.read_csv("Econ_Nobel_Laureates" + "\\" + "data_for_analysis.csv")  # df = DataFrame; an object specific for pandas library
         motherland = df["country_of_origin"].value_counts()  # There were to many repetitions of that piece of code, so defining a variable makes more sense.
@@ -44,116 +110,5 @@ def analyze_data():
             print("Something went wrong: ", Exception)
 
 
-def harvest_data():
-    url: str = "https://www.nobelprize.org/prizes/lists/all-prizes-in-economic-sciences/"
-
-    extracted_links: list = []
-    names: list = []
-    year: list = []
-    born: list = []
-    place_of_birth: list = []
-    affiliation: list = []
-    motivation: list = []
-    data_needed: dict = {}
-
-    nobel_prizes_economy: bytes = requests.get(url).content
-
-    soup = BeautifulSoup(nobel_prizes_economy, 'html.parser')
-
-    prizes_by_year: list = soup.find_all('div', class_='by_year')
-
-    print('''
-        
-        Gathering links to bio of laureates
-        
-        ''')
-
-    for i in prizes_by_year:
-        links_in_tag: list = i.find_all('a')
-        for _ in links_in_tag:
-            if "facts" in _.get('href'):
-                extracted_links.append(_.get('href'))
-                names.append(_.text)
-                year_received = (re.search(r'\d\d\d\d', str(_.get('href'))))
-                year.append(year_received.group(0))
-
-    for i in extracted_links:
-        print('''
-        Gathering information on {0}
-        '''.format(i))
-        soupify = BeautifulSoup(requests.get(i).content, 'html.parser')
-        information = soupify.find_all('p')
-        for j in information:
-            if 'Born:' in j.text:
-                birthday = re.search(r'\d\d? \w* \d\d\d\d|\d\d\d\d', j.text)
-                born.append(birthday.group(0))
-                birthplace = re.search(r'(?<=\d\d\d\d, ).*', j.text)
-                place_of_birth.append(birthplace.group(0).strip())
-            if 'Affiliation' in j.text:
-                institution = re.search(r'(?<=Affiliation at the time of the award:).*', j.text)
-                institution = institution.group(0)
-                affiliation.append(institution.strip())
-            if 'The Sveriges Riksbank Prize in Economic Sciences in Memory of Alfred Nobel 1974' in j.text:
-                affiliation.append("Affiliation unknown")
-            if 'motivation' in j.text:
-                motif = re.search(r'(?<=for).*', j.text)
-                motif = motif.group(0)
-                motif = motif.replace('"', '')
-                motif = motif.replace('.', '')
-                motivation.append(motif.strip())
-
-    with open("Econ_Nobel_Laureates" + '\\' + "data_for_analysis.csv", 'w+', encoding='utf-8', newline='') as f:
-        print('''
-        
-        .----.______
-        |           |
-        |    ___________
-        |   /          /
-        |  /          /
-        | /          /
-        |/__________/
-        
-        Creating csv from harvested data
-        
-        ''')
-        # Fieldnames differ from those in the instruction! Proceed with caution.
-        fieldnames = ['names', 'link', 'born', 'place_of_birth', 'year', 'affiliation', 'what_for', 'gender', 'country_of_origin', 'country_of_affiliation']
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        for i in range(0, len(names) - 1):
-            first_name = names[i].split()[0]
-            gender = Genderize().get([first_name])[0]['gender']  # genderize library returns a dictionary as a response, hence we need to access the key.
-            country_of_origin = place_of_birth[i].split()[-1]
-            country_of_affiliation = affiliation[i].split()[-1]
-            data_needed[names[i]] = [names[i], born[i], year[i], affiliation[i], motivation[i], gender, country_of_origin, country_of_affiliation]  # The same information is passed onto a dictionary, as onto .csv - simplifies serialization of the data to .json, if needed.
-            writer.writerow({fieldnames[0]: names[i], fieldnames[1]: extracted_links[i], fieldnames[2]: born[i], fieldnames[3]: place_of_birth[i],
-                             fieldnames[4]:  year[i], fieldnames[5]:  affiliation[i], fieldnames[6]: motivation[i], fieldnames[7]: gender,
-                             fieldnames[8]: country_of_origin, fieldnames[9]: country_of_affiliation})
-        f.close()
-
-    print("Harvesting the data is done. Program will exit now.")
-    exit(0)
-
-
-def main():
-    while True:
-        task_to_perform = input('''
-    
-    What do you want to do: [h]arvest data or [a]nalyze it?
-    
-    If you want to exit, press 'e'.
-    
-    Your input: ''')
-        if task_to_perform == 'h':
-            harvest_data()
-        if task_to_perform == 'a':
-            analyze_data()
-        if task_to_perform == 'e':
-            exit(0)
-        else:
-            print("Unknown command.")
-            continue
-
-
 if __name__ == "__main__":
-    main()
+    harvest_data()
