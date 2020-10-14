@@ -16,11 +16,18 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c1fbf9e-89a1-4d69-9ab3-27412ed3ae4e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Econ_Nobel_Laureates/data_for_analysis.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Econ_Nobel_Laureates/data_for_analysis.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignement_nobel.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignement_nobel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -75,28 +82,44 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state width="1899" height="290" key="GridCell.Tab.0.bottom" timestamp="1602701661539">
+    <state width="1899" height="290" key="GridCell.Tab.0.bottom" timestamp="1602703839428">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1899" height="290" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1602701661539" />
-    <state width="1899" height="290" key="GridCell.Tab.0.center" timestamp="1602701661539">
+    <state width="1899" height="290" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1602703839428" />
+    <state width="1899" height="290" key="GridCell.Tab.0.center" timestamp="1602703839428">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1899" height="290" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1602701661539" />
-    <state width="1899" height="290" key="GridCell.Tab.0.left" timestamp="1602701661539">
+    <state width="1899" height="290" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1602703839428" />
+    <state width="1899" height="290" key="GridCell.Tab.0.left" timestamp="1602703839428">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1899" height="290" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1602701661539" />
-    <state width="1899" height="290" key="GridCell.Tab.0.right" timestamp="1602701661539">
+    <state width="1899" height="290" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1602703839428" />
+    <state width="1899" height="290" key="GridCell.Tab.0.right" timestamp="1602703839428">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
-    <state width="1899" height="290" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1602701661539" />
+    <state width="1899" height="290" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1602703839428" />
+    <state x="552" y="258" key="Vcs.Push.Dialog.v2" timestamp="1602702161612">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="552" y="258" key="Vcs.Push.Dialog.v2/0.0.1920.1050@0.0.1920.1050" timestamp="1602702161612" />
   </component>
 </project>
